@@ -89,33 +89,20 @@ class listWindow
     @listView.addEventListener('itemclick',(e) =>
       that = @
       index = e.itemIndex
-      if e.section.items[index].loadOld is true
-        maincontroller.getNextFeed((items) ->
-          lastIndex = that._getLastItemIndex()
-          Ti.API.info "lastIndex is #{lastIndex}"
-          currentSection = that.listView.sections[0]
-          return currentSection.insertItemsAt(lastIndex,items)
+      
+      # e.section.items[index]を参照することで
+      # secitonに配置したアイコン、タイトルやカスタムプロパティの値も全て取得できる
 
-        )
-      else
-        
-        # e.section.items[index]を参照することで
-        # secitonに配置したアイコン、タイトルやカスタムプロパティの値も全て取得できる
-
-        data =
-          uuid:e.section.items[index].properties.data.uuid
-          url:e.section.items[index].properties.data.url
-          title:e.section.items[index].properties.data.title
-          body:e.section.items[index].properties.data.body
-          icon:e.section.items[index].properties.data.user.profile_image_url
-        
-        detailWindow = require('ui/iphone/detailWindow')
-        detailWindow = new detailWindow(data)
-        detailWindow.top = Ti.Platform.displayCaps.platformHeight        
-        animation = Ti.UI.createAnimation()
-        animation.top = 0
-        animation.duration = 300
-        detailWindow.open(animation)
+      data =
+        title:e.section.items[index].properties.data.title
+        startTime:e.section.items[index].properties.data.startTime
+        details:e.section.items[index].properties.data.details
+        icon:e.section.items[index].properties.data.icon
+        pict:e.section.items[index].properties.data.pict
+      
+      detailWindow = require('ui/iphone/detailWindow')
+      detailWindow = new detailWindow(data)
+      Ti.API._activeTab.open(detailWindow)      
 
     )
     KloudService = require("model/kloudService")
@@ -135,7 +122,6 @@ class listWindow
       color:'#333'
       font:
         fontSize:18
-        fontFamily : 'Rounded M+ 1p'
         fontWeight:'bold'
       text:"2013年PT忘年会"
 
@@ -150,28 +136,38 @@ class listWindow
 
     dataSet = []
     for _items in data
-      rawData = _items
       Ti.API.info _items.photo
-
+      
       if _items.photo is null or typeof _items.photo is "undefined"
-        imagePath = "ui/image/noimageSmall.jpg"
+        iconPath = "ui/image/noimageSmall.jpg"
+        pictPath = "ui/image/noimage.png"
       else
-        imagePath = _items.photo.urls.square_75
+        iconPath = _items.photo.urls.square_75
+        pictPath = _items.photo.urls.small_240
+        # pictPath = _items.photo.urls.original
+        
+      _data =
+        title     : _items.name
+        startTime : _items.start_time
+        details   : _items.details
+        icon      : iconPath
+        pict      : pictPath        
+        
       layout =
         properties:
           height:120
           selectionStyle: Titanium.UI.iPhone.ListViewCellSelectionStyle.NONE
           accessoryType:Titanium.UI.LIST_ACCESSORY_TYPE_DISCLOSURE
-          data:rawData
+          data:_data
           
         title:
           text: _items.name
         startTime:
-          text: _items.startTime
+          text: _items.start_time
         details:
           text: _items.details
         icon:
-          image:imagePath
+          image:iconPath
 
       dataSet.push(layout)
                 

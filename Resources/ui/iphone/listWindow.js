@@ -98,33 +98,19 @@ listWindow = (function() {
       });
     });
     this.listView.addEventListener('itemclick', function(e) {
-      var animation, data, detailWindow, index, that;
+      var data, detailWindow, index, that;
       that = _this;
       index = e.itemIndex;
-      if (e.section.items[index].loadOld === true) {
-        return maincontroller.getNextFeed(function(items) {
-          var currentSection, lastIndex;
-          lastIndex = that._getLastItemIndex();
-          Ti.API.info("lastIndex is " + lastIndex);
-          currentSection = that.listView.sections[0];
-          return currentSection.insertItemsAt(lastIndex, items);
-        });
-      } else {
-        data = {
-          uuid: e.section.items[index].properties.data.uuid,
-          url: e.section.items[index].properties.data.url,
-          title: e.section.items[index].properties.data.title,
-          body: e.section.items[index].properties.data.body,
-          icon: e.section.items[index].properties.data.user.profile_image_url
-        };
-        detailWindow = require('ui/iphone/detailWindow');
-        detailWindow = new detailWindow(data);
-        detailWindow.top = Ti.Platform.displayCaps.platformHeight;
-        animation = Ti.UI.createAnimation();
-        animation.top = 0;
-        animation.duration = 300;
-        return detailWindow.open(animation);
-      }
+      data = {
+        title: e.section.items[index].properties.data.title,
+        startTime: e.section.items[index].properties.data.startTime,
+        details: e.section.items[index].properties.data.details,
+        icon: e.section.items[index].properties.data.icon,
+        pict: e.section.items[index].properties.data.pict
+      };
+      detailWindow = require('ui/iphone/detailWindow');
+      detailWindow = new detailWindow(data);
+      return Ti.API._activeTab.open(detailWindow);
     });
     KloudService = require("model/kloudService");
     this.kloudService = new KloudService();
@@ -143,7 +129,6 @@ listWindow = (function() {
       color: '#333',
       font: {
         fontSize: 18,
-        fontFamily: 'Rounded M+ 1p',
         fontWeight: 'bold'
       },
       text: "2013年PT忘年会"
@@ -154,37 +139,45 @@ listWindow = (function() {
   };
 
   listWindow.prototype._refreshData = function(data) {
-    var dataSet, imagePath, layout, rawData, section, sections, _i, _items, _len;
+    var dataSet, iconPath, layout, pictPath, section, sections, _data, _i, _items, _len;
     sections = [];
     section = Ti.UI.createListSection();
     dataSet = [];
     for (_i = 0, _len = data.length; _i < _len; _i++) {
       _items = data[_i];
-      rawData = _items;
       Ti.API.info(_items.photo);
       if (_items.photo === null || typeof _items.photo === "undefined") {
-        imagePath = "ui/image/noimageSmall.jpg";
+        iconPath = "ui/image/noimageSmall.jpg";
+        pictPath = "ui/image/noimage.png";
       } else {
-        imagePath = _items.photo.urls.square_75;
+        iconPath = _items.photo.urls.square_75;
+        pictPath = _items.photo.urls.small_240;
       }
+      _data = {
+        title: _items.name,
+        startTime: _items.start_time,
+        details: _items.details,
+        icon: iconPath,
+        pict: pictPath
+      };
       layout = {
         properties: {
           height: 120,
           selectionStyle: Titanium.UI.iPhone.ListViewCellSelectionStyle.NONE,
           accessoryType: Titanium.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
-          data: rawData
+          data: _data
         },
         title: {
           text: _items.name
         },
         startTime: {
-          text: _items.startTime
+          text: _items.start_time
         },
         details: {
           text: _items.details
         },
         icon: {
-          image: imagePath
+          image: iconPath
         }
       };
       dataSet.push(layout);
