@@ -1,0 +1,13 @@
+{
+  "nend":{
+    "spotId": 65161,
+    "apiKey": "6c834f856082a2b54e8f1f99d47bedf5c555b857"
+  },
+  "facebook":{
+    "appid": 181948098632770,
+    "secret": "c2c332f361b6e743f6de79cd88677cae"
+  },
+  "GoogleAnalytics":{
+    "key":"UA-42690063-1"	
+  }
+}
