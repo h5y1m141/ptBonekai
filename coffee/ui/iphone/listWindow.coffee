@@ -89,33 +89,22 @@ class listWindow
     @listView.addEventListener('itemclick',(e) =>
       that = @
       index = e.itemIndex
-      if e.section.items[index].loadOld is true
-        maincontroller.getNextFeed((items) ->
-          lastIndex = that._getLastItemIndex()
-          Ti.API.info "lastIndex is #{lastIndex}"
-          currentSection = that.listView.sections[0]
-          return currentSection.insertItemsAt(lastIndex,items)
+      
+      # e.section.items[index]を参照することで
+      # secitonに配置したアイコン、タイトルやカスタムプロパティの値も全て取得できる
 
-        )
-      else
+      # data =
+      #   uuid:e.section.items[index].properties.data.uuid
+      #   url:e.section.items[index].properties.data.url
+      #   title:e.section.items[index].properties.data.title
+      #   body:e.section.items[index].properties.data.body
+      #   icon:e.section.items[index].properties.data.user.profile_image_url
+      win = Ti.UI.createWindow
+        title:'test'
         
-        # e.section.items[index]を参照することで
-        # secitonに配置したアイコン、タイトルやカスタムプロパティの値も全て取得できる
-
-        data =
-          uuid:e.section.items[index].properties.data.uuid
-          url:e.section.items[index].properties.data.url
-          title:e.section.items[index].properties.data.title
-          body:e.section.items[index].properties.data.body
-          icon:e.section.items[index].properties.data.user.profile_image_url
-        
-        detailWindow = require('ui/iphone/detailWindow')
-        detailWindow = new detailWindow(data)
-        detailWindow.top = Ti.Platform.displayCaps.platformHeight        
-        animation = Ti.UI.createAnimation()
-        animation.top = 0
-        animation.duration = 300
-        detailWindow.open(animation)
+      Ti.API._activeTab.open(win)
+      # detailWindow = require('ui/iphone/detailWindow')
+      # detailWindow = new detailWindow(data)
 
     )
     KloudService = require("model/kloudService")

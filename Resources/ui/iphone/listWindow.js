@@ -98,33 +98,13 @@ listWindow = (function() {
       });
     });
     this.listView.addEventListener('itemclick', function(e) {
-      var animation, data, detailWindow, index, that;
+      var index, that, win;
       that = _this;
       index = e.itemIndex;
-      if (e.section.items[index].loadOld === true) {
-        return maincontroller.getNextFeed(function(items) {
-          var currentSection, lastIndex;
-          lastIndex = that._getLastItemIndex();
-          Ti.API.info("lastIndex is " + lastIndex);
-          currentSection = that.listView.sections[0];
-          return currentSection.insertItemsAt(lastIndex, items);
-        });
-      } else {
-        data = {
-          uuid: e.section.items[index].properties.data.uuid,
-          url: e.section.items[index].properties.data.url,
-          title: e.section.items[index].properties.data.title,
-          body: e.section.items[index].properties.data.body,
-          icon: e.section.items[index].properties.data.user.profile_image_url
-        };
-        detailWindow = require('ui/iphone/detailWindow');
-        detailWindow = new detailWindow(data);
-        detailWindow.top = Ti.Platform.displayCaps.platformHeight;
-        animation = Ti.UI.createAnimation();
-        animation.top = 0;
-        animation.duration = 300;
-        return detailWindow.open(animation);
-      }
+      win = Ti.UI.createWindow({
+        title: 'test'
+      });
+      return Ti.API._activeTab.open(win);
     });
     KloudService = require("model/kloudService");
     this.kloudService = new KloudService();
