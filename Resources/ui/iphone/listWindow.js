@@ -129,7 +129,6 @@ listWindow = (function() {
       color: '#333',
       font: {
         fontSize: 18,
-        fontFamily: 'Rounded M+ 1p',
         fontWeight: 'bold'
       },
       text: "2013年PT忘年会"

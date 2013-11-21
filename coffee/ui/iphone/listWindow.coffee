@@ -122,7 +122,6 @@ class listWindow
       color:'#333'
       font:
         fontSize:18
-        fontFamily : 'Rounded M+ 1p'
         fontWeight:'bold'
       text:"2013年PT忘年会"
 
@@ -145,7 +144,7 @@ class listWindow
       else
         iconPath = _items.photo.urls.square_75
         pictPath = _items.photo.urls.small_240
-        
+        # pictPath = _items.photo.urls.original
         
       _data =
         title     : _items.name

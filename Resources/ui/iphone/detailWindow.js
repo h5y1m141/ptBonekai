@@ -10,6 +10,7 @@ shopDataDetailWindow = (function() {
       backgroundColor: "#f3f3f3",
       keyColor: "#DA5019",
       textColor: "#333",
+      textGrayColor: "#666",
       phoneColor: "#3261AB",
       favoriteColor: "#DA5019",
       feedbackColor: "#DA5019",
@@ -24,11 +25,66 @@ shopDataDetailWindow = (function() {
     });
     this._createNavbarElement(data.title);
     this._createTableView(data);
+    this._createDescription(data.pict, data.details);
     ActivityIndicator = require("ui/activityIndicator");
     this.activityIndicator = new ActivityIndicator();
     this.detailWindow.add(this.activityIndicator);
     return this.detailWindow;
   }
+
+  shopDataDetailWindow.prototype._createDescription = function(picturePath, details) {
+    var button, container, pictImage,
+      _this = this;
+    container = Ti.UI.createView({
+      left: 10,
+      top: 10,
+      width: 320,
+      height: 180
+    });
+    pictImage = Ti.UI.createImageView({
+      image: picturePath,
+      width: 150,
+      height: 150,
+      top: 5,
+      left: 5,
+      borderRadius: 3,
+      borderColor: this.baseColor.separatorColor
+    });
+    details = Ti.UI.createLabel({
+      text: details,
+      width: 150,
+      height: 100,
+      top: 5,
+      left: 160,
+      textAlign: 'left',
+      color: this.baseColor.textGrayColor,
+      font: {
+        fontSize: 10
+      }
+    });
+    button = Ti.UI.createLabel({
+      width: 120,
+      height: 40,
+      top: 110,
+      left: 175,
+      textAlign: 'center',
+      text: '投票する',
+      font: {
+        fontSize: 18,
+        fontWeight: 'bold'
+      },
+      backgroundColor: "#4cda64",
+      color: this.baseColor.barColor,
+      borderWidth: 1,
+      borderRadius: 10,
+      borderColor: this.baseColor.backgroundColor
+    });
+    button.addEventListener('click', function(e) {});
+    container.add(pictImage);
+    container.add(details);
+    container.add(button);
+    return this.detailWindow.add(container);
+  };
 
   shopDataDetailWindow.prototype._createNavbarElement = function(title) {
     var backButton, detailWindowTitle,
@@ -61,8 +117,9 @@ shopDataDetailWindow = (function() {
     this.tableView = Ti.UI.createTableView({
       width: 'auto',
       height: 'auto',
-      top: 0,
+      top: 200,
       left: 0,
+      borderColor: "#222",
       backgroundColor: this.baseColor.backgroundColor,
       separatorColor: this.baseColor.separatorColor
     });

@@ -18,11 +18,11 @@ class shopDataDetailWindow
       backgroundColor:"#f3f3f3"
       keyColor:"#DA5019"
       textColor:"#333"
+      textGrayColor:"#666"      
       phoneColor:"#3261AB"
       favoriteColor:"#DA5019"
       feedbackColor:"#DA5019"
       separatorColor:'#cccccc'
-
       
     @detailWindow = Ti.UI.createWindow
       title:data.title
@@ -31,11 +31,9 @@ class shopDataDetailWindow
       tabBarHidden:true
       navBarHidden:false
       
-    
-    
     @_createNavbarElement(data.title)
     @_createTableView(data)
-
+    @_createDescription(data.pict,data.details)
 
     ActivityIndicator = require("ui/activityIndicator")
     @activityIndicator = new ActivityIndicator()
@@ -43,7 +41,56 @@ class shopDataDetailWindow
     
     return @detailWindow
 
+  _createDescription:(picturePath,details) ->
+    container = Ti.UI.createView
+      left:10
+      top:10
+      width:320
+      height:180
     
+    pictImage = Ti.UI.createImageView
+      image: picturePath
+      width:150
+      height:150
+      top:5
+      left:5
+      borderRadius:3
+      borderColor:@baseColor.separatorColor
+      
+    details = Ti.UI.createLabel
+      text:details
+      width:150
+      height:100
+      top:5
+      left:160
+      textAlign: 'left'
+      color:@baseColor.textGrayColor
+      font:
+        fontSize:10
+        
+    button = Ti.UI.createLabel
+      width:120
+      height:40
+      top:110
+      left:175
+      textAlign:'center'
+      text:'投票する'
+      font:
+        fontSize:18
+        fontWeight:'bold'
+      # backgroundColor:"#d8514b" # 赤ベース      
+      backgroundColor:"#4cda64" # 緑ベース      
+      color:@baseColor.barColor      
+      borderWidth:1
+      borderRadius:10
+      borderColor:@baseColor.backgroundColor
+    button.addEventListener('click',(e) =>
+    )
+    container.add pictImage
+    container.add details
+    container.add button
+    return @detailWindow.add container
+        
   _createNavbarElement:(title) ->
     backButton = Titanium.UI.createButton
       backgroundImage:"ui/image/backButton.png"
@@ -74,8 +121,9 @@ class shopDataDetailWindow
     @tableView = Ti.UI.createTableView
       width:'auto'
       height:'auto'
-      top:0
+      top:200
       left:0
+      borderColor:"#222"
       backgroundColor:@baseColor.backgroundColor
       separatorColor:@baseColor.separatorColor
       
