@@ -93,18 +93,16 @@ class listWindow
       # e.section.items[index]を参照することで
       # secitonに配置したアイコン、タイトルやカスタムプロパティの値も全て取得できる
 
-      # data =
-      #   uuid:e.section.items[index].properties.data.uuid
-      #   url:e.section.items[index].properties.data.url
-      #   title:e.section.items[index].properties.data.title
-      #   body:e.section.items[index].properties.data.body
-      #   icon:e.section.items[index].properties.data.user.profile_image_url
-      win = Ti.UI.createWindow
-        title:'test'
-        
-      Ti.API._activeTab.open(win)
-      # detailWindow = require('ui/iphone/detailWindow')
-      # detailWindow = new detailWindow(data)
+      data =
+        title:e.section.items[index].properties.data.title
+        startTime:e.section.items[index].properties.data.startTime
+        details:e.section.items[index].properties.data.details
+        icon:e.section.items[index].properties.data.icon
+        pict:e.section.items[index].properties.data.pict
+      
+      detailWindow = require('ui/iphone/detailWindow')
+      detailWindow = new detailWindow(data)
+      Ti.API._activeTab.open(detailWindow)      
 
     )
     KloudService = require("model/kloudService")
@@ -139,28 +137,38 @@ class listWindow
 
     dataSet = []
     for _items in data
-      rawData = _items
       Ti.API.info _items.photo
-
+      
       if _items.photo is null or typeof _items.photo is "undefined"
-        imagePath = "ui/image/noimageSmall.jpg"
+        iconPath = "ui/image/noimageSmall.jpg"
+        pictPath = "ui/image/noimage.png"
       else
-        imagePath = _items.photo.urls.square_75
+        iconPath = _items.photo.urls.square_75
+        pictPath = _items.photo.urls.small_240
+        
+        
+      _data =
+        title     : _items.name
+        startTime : _items.start_time
+        details   : _items.details
+        icon      : iconPath
+        pict      : pictPath        
+        
       layout =
         properties:
           height:120
           selectionStyle: Titanium.UI.iPhone.ListViewCellSelectionStyle.NONE
           accessoryType:Titanium.UI.LIST_ACCESSORY_TYPE_DISCLOSURE
-          data:rawData
+          data:_data
           
         title:
           text: _items.name
         startTime:
-          text: _items.startTime
+          text: _items.start_time
         details:
           text: _items.details
         icon:
-          image:imagePath
+          image:iconPath
 
       dataSet.push(layout)
                 

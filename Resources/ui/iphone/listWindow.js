@@ -98,13 +98,19 @@ listWindow = (function() {
       });
     });
     this.listView.addEventListener('itemclick', function(e) {
-      var index, that, win;
+      var data, detailWindow, index, that;
       that = _this;
       index = e.itemIndex;
-      win = Ti.UI.createWindow({
-        title: 'test'
-      });
-      return Ti.API._activeTab.open(win);
+      data = {
+        title: e.section.items[index].properties.data.title,
+        startTime: e.section.items[index].properties.data.startTime,
+        details: e.section.items[index].properties.data.details,
+        icon: e.section.items[index].properties.data.icon,
+        pict: e.section.items[index].properties.data.pict
+      };
+      detailWindow = require('ui/iphone/detailWindow');
+      detailWindow = new detailWindow(data);
+      return Ti.API._activeTab.open(detailWindow);
     });
     KloudService = require("model/kloudService");
     this.kloudService = new KloudService();
@@ -134,37 +140,45 @@ listWindow = (function() {
   };
 
   listWindow.prototype._refreshData = function(data) {
-    var dataSet, imagePath, layout, rawData, section, sections, _i, _items, _len;
+    var dataSet, iconPath, layout, pictPath, section, sections, _data, _i, _items, _len;
     sections = [];
     section = Ti.UI.createListSection();
     dataSet = [];
     for (_i = 0, _len = data.length; _i < _len; _i++) {
       _items = data[_i];
-      rawData = _items;
       Ti.API.info(_items.photo);
       if (_items.photo === null || typeof _items.photo === "undefined") {
-        imagePath = "ui/image/noimageSmall.jpg";
+        iconPath = "ui/image/noimageSmall.jpg";
+        pictPath = "ui/image/noimage.png";
       } else {
-        imagePath = _items.photo.urls.square_75;
+        iconPath = _items.photo.urls.square_75;
+        pictPath = _items.photo.urls.small_240;
       }
+      _data = {
+        title: _items.name,
+        startTime: _items.start_time,
+        details: _items.details,
+        icon: iconPath,
+        pict: pictPath
+      };
       layout = {
         properties: {
           height: 120,
           selectionStyle: Titanium.UI.iPhone.ListViewCellSelectionStyle.NONE,
           accessoryType: Titanium.UI.LIST_ACCESSORY_TYPE_DISCLOSURE,
-          data: rawData
+          data: _data
         },
         title: {
           text: _items.name
         },
         startTime: {
-          text: _items.startTime
+          text: _items.start_time
         },
         details: {
           text: _items.details
         },
         icon: {
-          image: imagePath
+          image: iconPath
         }
       };
       dataSet.push(layout);
