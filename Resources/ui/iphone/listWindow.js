@@ -101,6 +101,7 @@ listWindow = (function() {
       that = _this;
       index = e.itemIndex;
       data = {
+        eventID: e.section.items[index].properties.data.eventID,
         title: e.section.items[index].properties.data.title,
         startTime: e.section.items[index].properties.data.startTime,
         details: e.section.items[index].properties.data.details,
@@ -156,6 +157,7 @@ listWindow = (function() {
         pictPath = _items.photo.urls.small_240;
       }
       _data = {
+        eventID: _items.eventID,
         title: _items.name,
         startTime: _items.start_time,
         details: _items.details,

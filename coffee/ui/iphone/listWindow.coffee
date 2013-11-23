@@ -93,13 +93,13 @@ class listWindow
       
       # e.section.items[index]を参照することで
       # secitonに配置したアイコン、タイトルやカスタムプロパティの値も全て取得できる
-
       data =
-        title:e.section.items[index].properties.data.title
-        startTime:e.section.items[index].properties.data.startTime
-        details:e.section.items[index].properties.data.details
-        icon:e.section.items[index].properties.data.icon
-        pict:e.section.items[index].properties.data.pict
+        eventID   : e.section.items[index].properties.data.eventID
+        title     : e.section.items[index].properties.data.title
+        startTime : e.section.items[index].properties.data.startTime
+        details   : e.section.items[index].properties.data.details
+        icon      : e.section.items[index].properties.data.icon
+        pict      : e.section.items[index].properties.data.pict
       
       detailWindow = require('ui/iphone/detailWindow')
       detailWindow = new detailWindow(data)
@@ -140,7 +140,7 @@ class listWindow
     dataSet = []
     for _items in data
       Ti.API.info _items.photo
-      
+
       if _items.photo is null or typeof _items.photo is "undefined"
         iconPath = "ui/image/noimageSmall.jpg"
         pictPath = "ui/image/noimage.png"
@@ -150,6 +150,7 @@ class listWindow
         # pictPath = _items.photo.urls.original
         
       _data =
+        eventID   : _items.eventID
         title     : _items.name
         startTime : _items.start_time
         details   : _items.details
