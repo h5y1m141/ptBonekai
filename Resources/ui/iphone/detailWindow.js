@@ -26,6 +26,7 @@ shopDataDetailWindow = (function() {
     this._createNavbarElement(data.title);
     this._createTableView(data);
     this._createDescription(data.pict, data.details);
+    this._findComments();
     ActivityIndicator = require("ui/activityIndicator");
     this.activityIndicator = new ActivityIndicator();
     this.detailWindow.add(this.activityIndicator);
@@ -125,6 +126,22 @@ shopDataDetailWindow = (function() {
     });
     this.tableView.addEventListener('click', function(e) {});
     return this.detailWindow.add(this.tableView);
+  };
+
+  shopDataDetailWindow.prototype._findComments = function() {
+    var KloudService,
+      _this = this;
+    KloudService = require("model/kloudService");
+    this.kloudService = new KloudService();
+    return this.kloudService.findComments(function(comments) {
+      var comment, _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = comments.length; _i < _len; _i++) {
+        comment = comments[_i];
+        _results.push(Ti.API.info("eventID: " + comment.custom_fields.eventID + " and comment: " + comment.message));
+      }
+      return _results;
+    });
   };
 
   shopDataDetailWindow.prototype._createFavoriteDialog = function(shopName) {

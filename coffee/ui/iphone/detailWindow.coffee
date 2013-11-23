@@ -34,7 +34,7 @@ class shopDataDetailWindow
     @_createNavbarElement(data.title)
     @_createTableView(data)
     @_createDescription(data.pict,data.details)
-
+    @_findComments()
     ActivityIndicator = require("ui/activityIndicator")
     @activityIndicator = new ActivityIndicator()
     @detailWindow.add @activityIndicator
@@ -132,7 +132,15 @@ class shopDataDetailWindow
     )
 
     return @detailWindow.add @tableView
-            
+    
+  _findComments:() ->
+    KloudService = require("model/kloudService")
+    @kloudService = new KloudService()
+    @kloudService.findComments((comments) =>
+      for comment in comments
+        Ti.API.info "eventID: #{comment.custom_fields.eventID} and comment: #{comment.message}"
+        
+    )                
   _createFavoriteDialog:(shopName) ->
     t = Titanium.UI.create2DMatrix().scale(0.0)
     unselectedColor = "#666"
