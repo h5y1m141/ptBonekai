@@ -72,16 +72,17 @@ class listWindow
     @listView = Ti.UI.createListView
       top:0
       left:0
-      zIndex:20
+      zIndex:1
       templates:
         template: myTemplate
       defaultItemTemplate: "template"
-      refreshControlEnabled:true
+
     @listView.addEventListener("refreshstart",(e) =>
-      @listView.isRefreshing()
+      @activityIndicator.show()
       mainController.findEvents((result) =>
         @refresData(result)
-        @listView.refreshFinish()
+        @activityIndicator.hide()
+
       )
 
     )
@@ -105,13 +106,15 @@ class listWindow
       Ti.API._activeTab.open(detailWindow)      
 
     )
+    @activityIndicator.show()
     KloudService = require("model/kloudService")
     @kloudService = new KloudService()
     @kloudService.findEvents((result) =>
       Ti.API.info "findEvents start result count: #{result.length}"
-      
+      @activityIndicator.hide()
       return @_refreshData(result)
     )
+    @listWindow.add @activityIndicator
     @listWindow.add @listView
     return @listWindow
             

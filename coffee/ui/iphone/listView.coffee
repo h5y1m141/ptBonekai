@@ -123,10 +123,12 @@ class listView
       defaultItemTemplate: "template"
       refreshControlEnabled:true
     @listView.addEventListener("refreshstart",(e) =>
-      @listView.isRefreshing()
+      @activityIndicator.zIndex = 20
+      @activityIndicator.show()
+
       mainController.findEvents((result) =>
         @refresData(result)
-        @listView.refreshFinish()
+        @activityIndicator.hide()
       )
 
     )

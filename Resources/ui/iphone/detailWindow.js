@@ -1,9 +1,10 @@
-var shopDataDetailWindow;
+var detailWindow;
 
-shopDataDetailWindow = (function() {
+detailWindow = (function() {
 
-  function shopDataDetailWindow(data) {
-    var ActivityIndicator, keyColor;
+  function detailWindow(data) {
+    var ActivityIndicator, TiISRefreshControl, keyColor;
+    TiISRefreshControl = require('be.k0suke.tiisrefreshcontrol');
     keyColor = "#f9f9f9";
     this.baseColor = {
       barColor: keyColor,
@@ -26,14 +27,14 @@ shopDataDetailWindow = (function() {
     this._createNavbarElement(data.title);
     this._createTableView(data);
     this._createDescription(data.pict, data.details);
-    this._findComments();
     ActivityIndicator = require("ui/activityIndicator");
     this.activityIndicator = new ActivityIndicator();
     this.detailWindow.add(this.activityIndicator);
+    this._findComments();
     return this.detailWindow;
   }
 
-  shopDataDetailWindow.prototype._createDescription = function(picturePath, details) {
+  detailWindow.prototype._createDescription = function(picturePath, details) {
     var button, container, pictImage,
       _this = this;
     container = Ti.UI.createView({
@@ -87,7 +88,7 @@ shopDataDetailWindow = (function() {
     return this.detailWindow.add(container);
   };
 
-  shopDataDetailWindow.prototype._createNavbarElement = function(title) {
+  detailWindow.prototype._createNavbarElement = function(title) {
     var backButton, detailWindowTitle,
       _this = this;
     backButton = Titanium.UI.createButton({
@@ -113,38 +114,38 @@ shopDataDetailWindow = (function() {
     this.detailWindow.setTitleControl(detailWindowTitle);
   };
 
-  shopDataDetailWindow.prototype._createTableView = function(data) {
+  detailWindow.prototype._createTableView = function(data) {
     var _this = this;
     this.tableView = Ti.UI.createTableView({
       width: 'auto',
       height: 'auto',
       top: 200,
       left: 0,
-      borderColor: "#222",
       backgroundColor: this.baseColor.backgroundColor,
-      separatorColor: this.baseColor.separatorColor
+      separatorColor: this.baseColor.backgroundColor,
+      zIndex: 1
     });
     this.tableView.addEventListener('click', function(e) {});
     return this.detailWindow.add(this.tableView);
   };
 
-  shopDataDetailWindow.prototype._findComments = function() {
-    var KloudService,
-      _this = this;
+  detailWindow.prototype._findComments = function() {
+    var KloudService, kloudService, that;
+    that = this;
     KloudService = require("model/kloudService");
-    this.kloudService = new KloudService();
-    return this.kloudService.findComments(function(comments) {
-      var comment, _i, _len, _results;
-      _results = [];
+    kloudService = new KloudService();
+    this.activityIndicator.show();
+    return kloudService.findComments(function(comments) {
+      var comment, _i, _len;
       for (_i = 0, _len = comments.length; _i < _len; _i++) {
         comment = comments[_i];
-        _results.push(Ti.API.info("eventID: " + comment.custom_fields.eventID + " and comment: " + comment.message));
+        Ti.API.info("eventID: " + comment.custom_fields.eventID + " and comment: " + comment.message);
       }
-      return _results;
+      return that.activityIndicator.hide();
     });
   };
 
-  shopDataDetailWindow.prototype._createFavoriteDialog = function(shopName) {
+  detailWindow.prototype._createFavoriteDialog = function(shopName) {
     var cancelleBtn, contents, favoriteDialog, registMemoBtn, selectedColor, selectedValue, t, textArea, titleForMemo, unselectedColor,
       _this = this;
     t = Titanium.UI.create2DMatrix().scale(0.0);
@@ -267,7 +268,7 @@ shopDataDetailWindow = (function() {
     return favoriteDialog;
   };
 
-  shopDataDetailWindow.prototype._createPhoneDialog = function(phoneNumber, shopName) {
+  detailWindow.prototype._createPhoneDialog = function(phoneNumber, shopName) {
     var callBtn, cancelleBtn, confirmLabel, t, that, _view;
     that = this;
     t = Titanium.UI.create2DMatrix().scale(0.0);
@@ -339,7 +340,7 @@ shopDataDetailWindow = (function() {
     return _view;
   };
 
-  shopDataDetailWindow.prototype._createFeedBackDialog = function(shopName) {
+  detailWindow.prototype._createFeedBackDialog = function(shopName) {
     var cancelleBtn, contents, registMemoBtn, selectedColor, selectedValue, t, textArea, titleForMemo, unselectedColor, _view,
       _this = this;
     Ti.API.info("createFeedBackDialog start shopName is " + shopName);
@@ -462,19 +463,19 @@ shopDataDetailWindow = (function() {
     return _view;
   };
 
-  shopDataDetailWindow.prototype._setTiGFviewToMapView = function() {
+  detailWindow.prototype._setTiGFviewToMapView = function() {
     this.mapView.rasterizationScale = 0.1;
     this.mapView.shouldRasterize = true;
     this.mapView.kCAFilterTrilinear = true;
   };
 
-  shopDataDetailWindow.prototype._setDefaultMapViewStyle = function() {
+  detailWindow.prototype._setDefaultMapViewStyle = function() {
     this.mapView.rasterizationScale = 1.0;
     this.mapView.shouldRasterize = false;
     this.mapView.kCAFilterTrilinear = false;
   };
 
-  shopDataDetailWindow.prototype._showDialog = function(_view) {
+  detailWindow.prototype._showDialog = function(_view) {
     var animation, t1;
     t1 = Titanium.UI.create2DMatrix();
     t1 = t1.scale(1.0);
@@ -484,7 +485,7 @@ shopDataDetailWindow = (function() {
     return _view.animate(animation);
   };
 
-  shopDataDetailWindow.prototype._hideDialog = function(_view, callback) {
+  detailWindow.prototype._hideDialog = function(_view, callback) {
     var animation, t1;
     t1 = Titanium.UI.create2DMatrix();
     t1 = t1.scale(0.0);
@@ -497,8 +498,8 @@ shopDataDetailWindow = (function() {
     });
   };
 
-  return shopDataDetailWindow;
+  return detailWindow;
 
 })();
 
-module.exports = shopDataDetailWindow;
+module.exports = detailWindow;

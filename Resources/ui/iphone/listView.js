@@ -136,10 +136,11 @@ listView = (function() {
       refreshControlEnabled: true
     });
     this.listView.addEventListener("refreshstart", function(e) {
-      _this.listView.isRefreshing();
+      _this.activityIndicator.zIndex = 20;
+      _this.activityIndicator.show();
       return mainController.findEvents(function(result) {
         _this.refresData(result);
-        return _this.listView.refreshFinish();
+        return _this.activityIndicator.hide();
       });
     });
     this.listView.addEventListener('itemclick', function(e) {
