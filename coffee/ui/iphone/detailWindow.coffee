@@ -1,6 +1,5 @@
 class detailWindow
   constructor:(data)->
-    TiISRefreshControl = require('be.k0suke.tiisrefreshcontrol')
 
     keyColor = "#f9f9f9"
     @baseColor =
@@ -21,7 +20,7 @@ class detailWindow
       tabBarHidden:true
       navBarHidden:false
       
-    
+    @eventID = data.eventID
     @_createNavbarElement(data.title)
     @_createTableView(data)
     @_createDescription(data.pict,data.details)
@@ -136,11 +135,94 @@ class detailWindow
     @activityIndicator.show()
 
     kloudService.findComments((comments) ->
+      rows = []
       for comment in comments
-        Ti.API.info "eventID: #{comment.custom_fields.eventID} and comment: #{comment.message}"
+        # Ti.API.info "eventID: #{comment.custom_fields.eventID} and comment: #{comment.message}"
+        eventID = comment.custom_fields.eventID
+        # Ti.API.info "this event is :#{that.eventID} and get id is #{eventID}"
+        if that.eventID is eventID
+          row = that.createCommentRow(comment)
+          rows.push row
+        that.tableView.setData(rows)
+        
       that.activityIndicator.hide()
         
-    )                
+    )
+  createCommentRow:(comment) ->
+    row = Ti.UI.createTableViewRow
+      width:320
+      height:60
+      backgroundColor:@baseColor.backgroundColor
+      
+    bodySummary = Ti.UI.createLabel
+      width:200
+      height:40
+      left:50
+      top:0
+      color:"#444"
+      borderRadius:3
+      font:
+        fontSize:12
+      text:comment.message
+    
+    triangleImage = Ti.UI.createImageView
+      width:15
+      height:15
+      left:45
+      top:20
+      borderRadius:3
+      transform : Ti.UI.create2DMatrix().rotate(45)
+      borderColor:"#bbb"
+      borderWidth:1
+      zIndex:0      
+      backgroundColor:"#fff"
+      
+    breakLine = Ti.UI.createImageView
+      width:1
+      height:15
+      left:50
+      top:20
+      zIndex:10
+      backgroundColor:"#fff"
+      
+    messageBoxContainer = Ti.UI.createView
+      width:250
+      height:40
+      left:50
+      top:10
+      zIndex:5            
+      borderColor:"#bbb"
+      borderWidth:1
+      borderRadius:5
+      backgroundGradient:
+        type: 'linear'
+        startPoint:
+          x:'0%'
+          y:'0%'
+        endPoint:
+          x:'0%'
+          y:'100%'
+        colors: [
+          color: '#fff'
+          position: 0.0
+        ,      
+          color: '#fefefe'
+          position: 0.3
+        ,      
+          color: '#eee'
+          position: 1.0
+        ]
+      
+      
+    
+    messageBoxContainer.add bodySummary
+    
+    row.add triangleImage
+    row.add breakLine
+    row.add messageBoxContainer      
+      
+    return row
+    
   _createFavoriteDialog:(shopName) ->
     t = Titanium.UI.create2DMatrix().scale(0.0)
     unselectedColor = "#666"

@@ -3,8 +3,7 @@ var detailWindow;
 detailWindow = (function() {
 
   function detailWindow(data) {
-    var ActivityIndicator, TiISRefreshControl, keyColor;
-    TiISRefreshControl = require('be.k0suke.tiisrefreshcontrol');
+    var ActivityIndicator, keyColor;
     keyColor = "#f9f9f9";
     this.baseColor = {
       barColor: keyColor,
@@ -24,6 +23,7 @@ detailWindow = (function() {
       tabBarHidden: true,
       navBarHidden: false
     });
+    this.eventID = data.eventID;
     this._createNavbarElement(data.title);
     this._createTableView(data);
     this._createDescription(data.pict, data.details);
@@ -136,13 +136,98 @@ detailWindow = (function() {
     kloudService = new KloudService();
     this.activityIndicator.show();
     return kloudService.findComments(function(comments) {
-      var comment, _i, _len;
+      var comment, eventID, row, rows, _i, _len;
+      rows = [];
       for (_i = 0, _len = comments.length; _i < _len; _i++) {
         comment = comments[_i];
-        Ti.API.info("eventID: " + comment.custom_fields.eventID + " and comment: " + comment.message);
+        eventID = comment.custom_fields.eventID;
+        if (that.eventID === eventID) {
+          row = that.createCommentRow(comment);
+          rows.push(row);
+        }
+        that.tableView.setData(rows);
       }
       return that.activityIndicator.hide();
     });
+  };
+
+  detailWindow.prototype.createCommentRow = function(comment) {
+    var bodySummary, breakLine, messageBoxContainer, row, triangleImage;
+    row = Ti.UI.createTableViewRow({
+      width: 320,
+      height: 60,
+      backgroundColor: this.baseColor.backgroundColor
+    });
+    bodySummary = Ti.UI.createLabel({
+      width: 200,
+      height: 40,
+      left: 50,
+      top: 0,
+      color: "#444",
+      borderRadius: 3,
+      font: {
+        fontSize: 12
+      },
+      text: comment.message
+    });
+    triangleImage = Ti.UI.createImageView({
+      width: 15,
+      height: 15,
+      left: 45,
+      top: 20,
+      borderRadius: 3,
+      transform: Ti.UI.create2DMatrix().rotate(45),
+      borderColor: "#bbb",
+      borderWidth: 1,
+      zIndex: 0,
+      backgroundColor: "#fff"
+    });
+    breakLine = Ti.UI.createImageView({
+      width: 1,
+      height: 15,
+      left: 50,
+      top: 20,
+      zIndex: 10,
+      backgroundColor: "#fff"
+    });
+    messageBoxContainer = Ti.UI.createView({
+      width: 250,
+      height: 40,
+      left: 50,
+      top: 10,
+      zIndex: 5,
+      borderColor: "#bbb",
+      borderWidth: 1,
+      borderRadius: 5,
+      backgroundGradient: {
+        type: 'linear',
+        startPoint: {
+          x: '0%',
+          y: '0%'
+        },
+        endPoint: {
+          x: '0%',
+          y: '100%'
+        },
+        colors: [
+          {
+            color: '#fff',
+            position: 0.0
+          }, {
+            color: '#fefefe',
+            position: 0.3
+          }, {
+            color: '#eee',
+            position: 1.0
+          }
+        ]
+      }
+    });
+    messageBoxContainer.add(bodySummary);
+    row.add(triangleImage);
+    row.add(breakLine);
+    row.add(messageBoxContainer);
+    return row;
   };
 
   detailWindow.prototype._createFavoriteDialog = function(shopName) {
