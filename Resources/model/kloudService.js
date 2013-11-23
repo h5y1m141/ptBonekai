@@ -43,6 +43,29 @@ kloudService = (function() {
     });
   };
 
+  kloudService.prototype.findComments = function(callback) {
+    return this.Cloud.Statuses.query({
+      page: 1,
+      per_page: 100,
+      order: "-updated_at"
+    }, function(e) {
+      var i, result, status;
+      result = [];
+      if (e.success) {
+        i = 0;
+        while (i < e.statuses.length) {
+          status = e.statuses[i];
+          result.push(status);
+          Ti.API.info("Success:\n" + "id: " + status.id + "\n" + "message: " + status.message + "\n" + "updated_at: " + status.updated_at);
+          i++;
+        }
+        return callback(result);
+      } else {
+        return Ti.API.info("Error:\n" + ((e.error && e.message) || JSON.stringify(e)));
+      }
+    });
+  };
+
   kloudService.prototype.cbFanLogin = function(userID, password, callback) {
     this.Cloud.Users.login({
       login: userID,
