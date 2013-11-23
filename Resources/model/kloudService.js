@@ -20,7 +20,9 @@ kloudService = (function() {
           data = {
             name: event.name,
             details: event.details,
-            photo: event.photo
+            photo: event.photo,
+            eventID: event.id,
+            startTime: event.start_time
           };
           result.push(data);
           i++;
