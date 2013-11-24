@@ -20,7 +20,9 @@ kloudService = (function() {
           data = {
             name: event.name,
             details: event.details,
-            photo: event.photo
+            photo: event.photo,
+            eventID: event.id,
+            startTime: event.start_time
           };
           result.push(data);
           i++;
@@ -40,6 +42,29 @@ kloudService = (function() {
       startTime: "2013-12-20T20:00:00+0000"
     }, function(result) {
       return callback(result);
+    });
+  };
+
+  kloudService.prototype.findComments = function(callback) {
+    return this.Cloud.Statuses.query({
+      page: 1,
+      per_page: 100,
+      order: "-updated_at"
+    }, function(e) {
+      var i, result, status;
+      result = [];
+      if (e.success) {
+        i = 0;
+        while (i < e.statuses.length) {
+          status = e.statuses[i];
+          result.push(status);
+          Ti.API.info("Success:\n" + "id: " + status.id + "\n" + "message: " + status.message + "\n" + "updated_at: " + status.updated_at);
+          i++;
+        }
+        return callback(result);
+      } else {
+        return Ti.API.info("Error:\n" + ((e.error && e.message) || JSON.stringify(e)));
+      }
     });
   };
 

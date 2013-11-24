@@ -83,18 +83,17 @@ listWindow = (function() {
     this.listView = Ti.UI.createListView({
       top: 0,
       left: 0,
-      zIndex: 20,
+      zIndex: 1,
       templates: {
         template: myTemplate
       },
-      defaultItemTemplate: "template",
-      refreshControlEnabled: true
+      defaultItemTemplate: "template"
     });
     this.listView.addEventListener("refreshstart", function(e) {
-      _this.listView.isRefreshing();
+      _this.activityIndicator.show();
       return mainController.findEvents(function(result) {
         _this.refresData(result);
-        return _this.listView.refreshFinish();
+        return _this.activityIndicator.hide();
       });
     });
     this.listView.addEventListener('itemclick', function(e) {
@@ -102,6 +101,7 @@ listWindow = (function() {
       that = _this;
       index = e.itemIndex;
       data = {
+        eventID: e.section.items[index].properties.data.eventID,
         title: e.section.items[index].properties.data.title,
         startTime: e.section.items[index].properties.data.startTime,
         details: e.section.items[index].properties.data.details,
@@ -112,12 +112,15 @@ listWindow = (function() {
       detailWindow = new detailWindow(data);
       return Ti.API._activeTab.open(detailWindow);
     });
+    this.activityIndicator.show();
     KloudService = require("model/kloudService");
     this.kloudService = new KloudService();
     this.kloudService.findEvents(function(result) {
       Ti.API.info("findEvents start result count: " + result.length);
+      _this.activityIndicator.hide();
       return _this._refreshData(result);
     });
+    this.listWindow.add(this.activityIndicator);
     this.listWindow.add(this.listView);
     return this.listWindow;
   }
@@ -154,6 +157,7 @@ listWindow = (function() {
         pictPath = _items.photo.urls.small_240;
       }
       _data = {
+        eventID: _items.eventID,
         title: _items.name,
         startTime: _items.start_time,
         details: _items.details,

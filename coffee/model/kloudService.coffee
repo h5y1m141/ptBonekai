@@ -16,6 +16,8 @@ class kloudService
             name: event.name
             details:event.details
             photo:event.photo
+            eventID:event.id
+            startTime:event.start_time
             
           result.push(data)
           i++
@@ -31,7 +33,26 @@ class kloudService
       startTime:"2013-12-20T20:00:00+0000"
     , (result) ->
       return callback(result)
-  
+  findComments:(callback) ->
+    @Cloud.Statuses.query
+      page: 1
+      per_page:100
+      order: "-updated_at"
+    , (e) ->
+      result = []
+      if e.success
+        i = 0
+        while i < e.statuses.length
+          status = e.statuses[i]
+          result.push(status)
+          Ti.API.info "Success:\n" + "id: " + status.id + "\n" + "message: " + status.message + "\n" + "updated_at: " + status.updated_at
+          i++
+        callback(result)  
+      else
+        Ti.API.info "Error:\n" + ((e.error and e.message) or JSON.stringify(e))
+
+      
+    
   cbFanLogin:(userID,password,callback) ->
     @Cloud.Users.login
       login:userID

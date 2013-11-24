@@ -1,16 +1,5 @@
-class shopDataDetailWindow
+class detailWindow
   constructor:(data)->
-
-    # 引数に渡されるdataの構造は以下のとおり
-    # favoriteButtonEnableは、お気に入り登録するボタンを表示するか
-    # どうか決める
-    # data =
-    #   name:"お店の名前"
-    #   shopAddress:"お店の住所"
-    #   phoneNumber:"お店の電話番号"
-    #   latitude:
-    #   longitude:
-    #   favoriteButtonEnable:true/false
 
     keyColor = "#f9f9f9"
     @baseColor =
@@ -31,13 +20,16 @@ class shopDataDetailWindow
       tabBarHidden:true
       navBarHidden:false
       
+    @eventID = data.eventID
     @_createNavbarElement(data.title)
     @_createTableView(data)
     @_createDescription(data.pict,data.details)
-
     ActivityIndicator = require("ui/activityIndicator")
     @activityIndicator = new ActivityIndicator()
     @detailWindow.add @activityIndicator
+    
+    @_findComments()
+    
     
     return @detailWindow
 
@@ -100,9 +92,11 @@ class shopDataDetailWindow
     backButton.addEventListener('click',(e) =>
       return @detailWindow.close({animated:true})
     )
-    
-    @detailWindow.leftNavButton = backButton
+    commentButton = Ti.UI.createButton
+      title:'コメントする'
       
+    @detailWindow.leftNavButton = backButton
+    # @detailWindow.rightNavButton = commentButtong
     detailWindowTitle = Ti.UI.createLabel
       textAlign: 'center'
       color:@baseColor.textColor
@@ -121,18 +115,144 @@ class shopDataDetailWindow
     @tableView = Ti.UI.createTableView
       width:'auto'
       height:'auto'
-      top:200
+      top:180
       left:0
-      borderColor:"#222"
       backgroundColor:@baseColor.backgroundColor
-      separatorColor:@baseColor.separatorColor
+      separatorColor:@baseColor.backgroundColor
+      zIndex:1
       
+
+    
     @tableView.addEventListener('click',(e) =>
 
     )
 
     return @detailWindow.add @tableView
-            
+    
+  _findComments:() ->
+    that = @
+
+    KloudService = require("model/kloudService")
+    kloudService = new KloudService()
+    @activityIndicator.show()
+
+    kloudService.findComments((comments) ->
+      rows = []
+      for comment in comments
+        # Ti.API.info "eventID: #{comment.custom_fields.eventID} and comment: #{comment.message}"
+        eventID = comment.custom_fields.eventID
+        # Ti.API.info "this event is :#{that.eventID} and get id is #{eventID}"
+        if that.eventID is eventID
+          row = that.createCommentRow(comment)
+          rows.push row
+        that.tableView.setData(rows)
+        
+      that.activityIndicator.hide()
+        
+    )
+  createCommentRow:(comment) ->
+    row = Ti.UI.createTableViewRow
+      width:320
+      height:60
+      backgroundColor:@baseColor.backgroundColor
+      
+    verticalLine  = Ti.UI.createImageView
+      width:1
+      height:60
+      left:35
+      top:0
+      zIndex:10
+      backgroundColor:"#bbb"
+
+    marker = Ti.UI.createImageView
+      width:15
+      height:15
+      borderRadius:10
+      left:28
+      top:20
+      zIndex:10
+      backgroundColor:"#bbb"
+      
+    row.add verticalLine
+    row.add marker
+    bodySummary = Ti.UI.createLabel
+      width:200
+      height:40
+      left:20
+      top:0
+      color:"#222"
+      font:
+        fontSize:14
+      text:comment.message
+      
+    postDate = Ti.UI.createLabel
+      width:100
+      height:20
+      right:5
+      bottom:0
+      color:"#444"
+      font:
+        fontSize:10
+      text:"投稿日；10分前"
+    
+    triangleImage = Ti.UI.createImageView
+      width:15
+      height:15
+      left:45
+      top:20
+      borderRadius:3
+      transform : Ti.UI.create2DMatrix().rotate(45)
+      borderColor:"#bbb"
+      borderWidth:1
+      zIndex:0      
+      backgroundColor:"#fff"
+      
+    breakLine = Ti.UI.createImageView
+      width:1
+      height:15
+      left:50
+      top:20
+      zIndex:10
+      backgroundColor:"#fff"
+      
+    messageBoxContainer = Ti.UI.createView
+      width:250
+      height:40
+      left:50
+      top:10
+      zIndex:5            
+      borderColor:"#bbb"
+      borderWidth:1
+      borderRadius:5
+      backgroundGradient:
+        type: 'linear'
+        startPoint:
+          x:'0%'
+          y:'0%'
+        endPoint:
+          x:'0%'
+          y:'100%'
+        colors: [
+          color: '#fff'
+          position: 0.0
+        ,      
+          color: '#fefefe'
+          position: 0.3
+        ,      
+          color: '#eee'
+          position: 1.0
+        ]
+      
+      
+    
+    messageBoxContainer.add bodySummary
+    messageBoxContainer.add postDate
+    row.add triangleImage
+    row.add breakLine
+    row.add messageBoxContainer      
+      
+    return row
+    
   _createFavoriteDialog:(shopName) ->
     t = Titanium.UI.create2DMatrix().scale(0.0)
     unselectedColor = "#666"
@@ -490,4 +610,4 @@ class shopDataDetailWindow
     animation.addEventListener('complete',(e) ->
       return callback
     )        
-module.exports = shopDataDetailWindow  
+module.exports = detailWindow  
