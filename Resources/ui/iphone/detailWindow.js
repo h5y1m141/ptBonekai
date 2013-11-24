@@ -89,7 +89,7 @@ detailWindow = (function() {
   };
 
   detailWindow.prototype._createNavbarElement = function(title) {
-    var backButton, detailWindowTitle,
+    var backButton, commentButton, detailWindowTitle,
       _this = this;
     backButton = Titanium.UI.createButton({
       backgroundImage: "ui/image/backButton.png",
@@ -100,6 +100,9 @@ detailWindow = (function() {
       return _this.detailWindow.close({
         animated: true
       });
+    });
+    commentButton = Ti.UI.createButton({
+      title: 'コメントする'
     });
     this.detailWindow.leftNavButton = backButton;
     detailWindowTitle = Ti.UI.createLabel({
@@ -119,7 +122,7 @@ detailWindow = (function() {
     this.tableView = Ti.UI.createTableView({
       width: 'auto',
       height: 'auto',
-      top: 200,
+      top: 180,
       left: 0,
       backgroundColor: this.baseColor.backgroundColor,
       separatorColor: this.baseColor.backgroundColor,
@@ -152,23 +155,52 @@ detailWindow = (function() {
   };
 
   detailWindow.prototype.createCommentRow = function(comment) {
-    var bodySummary, breakLine, messageBoxContainer, row, triangleImage;
+    var bodySummary, breakLine, marker, messageBoxContainer, postDate, row, triangleImage, verticalLine;
     row = Ti.UI.createTableViewRow({
       width: 320,
       height: 60,
       backgroundColor: this.baseColor.backgroundColor
     });
+    verticalLine = Ti.UI.createImageView({
+      width: 1,
+      height: 60,
+      left: 35,
+      top: 0,
+      zIndex: 10,
+      backgroundColor: "#bbb"
+    });
+    marker = Ti.UI.createImageView({
+      width: 15,
+      height: 15,
+      borderRadius: 10,
+      left: 28,
+      top: 20,
+      zIndex: 10,
+      backgroundColor: "#bbb"
+    });
+    row.add(verticalLine);
+    row.add(marker);
     bodySummary = Ti.UI.createLabel({
       width: 200,
       height: 40,
-      left: 50,
+      left: 20,
       top: 0,
-      color: "#444",
-      borderRadius: 3,
+      color: "#222",
       font: {
-        fontSize: 12
+        fontSize: 14
       },
       text: comment.message
+    });
+    postDate = Ti.UI.createLabel({
+      width: 100,
+      height: 20,
+      right: 5,
+      bottom: 0,
+      color: "#444",
+      font: {
+        fontSize: 10
+      },
+      text: "投稿日；10分前"
     });
     triangleImage = Ti.UI.createImageView({
       width: 15,
@@ -224,6 +256,7 @@ detailWindow = (function() {
       }
     });
     messageBoxContainer.add(bodySummary);
+    messageBoxContainer.add(postDate);
     row.add(triangleImage);
     row.add(breakLine);
     row.add(messageBoxContainer);

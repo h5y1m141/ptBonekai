@@ -92,9 +92,11 @@ class detailWindow
     backButton.addEventListener('click',(e) =>
       return @detailWindow.close({animated:true})
     )
-    
-    @detailWindow.leftNavButton = backButton
+    commentButton = Ti.UI.createButton
+      title:'コメントする'
       
+    @detailWindow.leftNavButton = backButton
+    # @detailWindow.rightNavButton = commentButtong
     detailWindowTitle = Ti.UI.createLabel
       textAlign: 'center'
       color:@baseColor.textColor
@@ -113,7 +115,7 @@ class detailWindow
     @tableView = Ti.UI.createTableView
       width:'auto'
       height:'auto'
-      top:200
+      top:180
       left:0
       backgroundColor:@baseColor.backgroundColor
       separatorColor:@baseColor.backgroundColor
@@ -154,16 +156,44 @@ class detailWindow
       height:60
       backgroundColor:@baseColor.backgroundColor
       
+    verticalLine  = Ti.UI.createImageView
+      width:1
+      height:60
+      left:35
+      top:0
+      zIndex:10
+      backgroundColor:"#bbb"
+
+    marker = Ti.UI.createImageView
+      width:15
+      height:15
+      borderRadius:10
+      left:28
+      top:20
+      zIndex:10
+      backgroundColor:"#bbb"
+      
+    row.add verticalLine
+    row.add marker
     bodySummary = Ti.UI.createLabel
       width:200
       height:40
-      left:50
+      left:20
       top:0
-      color:"#444"
-      borderRadius:3
+      color:"#222"
       font:
-        fontSize:12
+        fontSize:14
       text:comment.message
+      
+    postDate = Ti.UI.createLabel
+      width:100
+      height:20
+      right:5
+      bottom:0
+      color:"#444"
+      font:
+        fontSize:10
+      text:"投稿日；10分前"
     
     triangleImage = Ti.UI.createImageView
       width:15
@@ -216,7 +246,7 @@ class detailWindow
       
     
     messageBoxContainer.add bodySummary
-    
+    messageBoxContainer.add postDate
     row.add triangleImage
     row.add breakLine
     row.add messageBoxContainer      
