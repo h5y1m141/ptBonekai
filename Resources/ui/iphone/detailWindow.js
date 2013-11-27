@@ -1,7 +1,6 @@
 var detailWindow;
 
 detailWindow = (function() {
-
   function detailWindow(data) {
     var ActivityIndicator, keyColor;
     keyColor = "#f9f9f9";

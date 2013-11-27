@@ -2,10 +2,8 @@ var listWindow,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 listWindow = (function() {
-
   function listWindow() {
     this._refreshData = __bind(this._refreshData, this);
-
     var ActivityIndicator, KloudService, myTemplate,
       _this = this;
     ActivityIndicator = require("ui/activityIndicator");

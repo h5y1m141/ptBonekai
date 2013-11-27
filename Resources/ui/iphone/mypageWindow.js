@@ -1,7 +1,6 @@
 var mypageWindow;
 
 mypageWindow = (function() {
-
   function mypageWindow() {
     var LoginForm, currentUserId, description, loginForm, loginType, mypageWindowTitle, rows, table, title, userName;
     this.baseColor = {

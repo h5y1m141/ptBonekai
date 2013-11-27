@@ -2,14 +2,10 @@ var mainController,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 mainController = (function() {
-
   function mainController() {
     this._login = __bind(this._login, this);
-
     this.getReviewInfo = __bind(this.getReviewInfo, this);
-
     this.createReview = __bind(this.createReview, this);
-
     var KloudService;
     KloudService = require("model/kloudService");
     this.kloudService = new KloudService();

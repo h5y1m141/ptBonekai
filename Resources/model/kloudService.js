@@ -1,7 +1,6 @@
 var kloudService;
 
 kloudService = (function() {
-
   function kloudService() {
     this.Cloud = require('ti.cloud');
   }
