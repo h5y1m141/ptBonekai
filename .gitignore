@@ -4,3 +4,6 @@ tmp
 ._*
 .DS_Store
 tiapp.xml
+Gemfile
+Gemfile.lock
+Guardfile
