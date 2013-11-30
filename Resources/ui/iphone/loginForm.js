@@ -2,12 +2,9 @@ var loginForm,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 loginForm = (function() {
-
   function loginForm() {
     this._createSignUPBox = __bind(this._createSignUPBox, this);
-
     this._createSkipBox = __bind(this._createSkipBox, this);
-
     var MainController, cancelleBtn, fb, fbLoginBtn, passwordField, registBtn, signUpBox, skipBox, t, userIDField,
       _this = this;
     this.baseColor = {

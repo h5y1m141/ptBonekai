@@ -1,7 +1,6 @@
 var shopDataDetailWindow;
 
 shopDataDetailWindow = (function() {
-
   function shopDataDetailWindow(data) {
     var ActivityIndicator, activeTab, filterView, keyColor;
     filterView = require("net.uchidak.tigfview");

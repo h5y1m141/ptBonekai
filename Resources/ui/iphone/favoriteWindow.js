@@ -1,7 +1,6 @@
 var favoriteWindow;
 
 favoriteWindow = (function() {
-
   function favoriteWindow() {
     var ActivityIndicator, MainController, activeTab, activityIndicator, keyColor, mainController,
       _this = this;

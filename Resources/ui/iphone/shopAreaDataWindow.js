@@ -1,7 +1,6 @@
 var shopAreaDataWindow;
 
 shopAreaDataWindow = (function() {
-
   function shopAreaDataWindow(items) {
     var activeTab, item, keyColor, searchBar, shopDataRow, shopDataRowTable, shopDataRows, _i, _len;
     keyColor = "#f9f9f9";
